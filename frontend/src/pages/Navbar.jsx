@@ -33,8 +33,8 @@ const Navbar = () => {
             <a href="/home" id='home'><h3 className="logo">Hostel Management</h3></a>
             <ul className={isMobile ? "nav-links-mobile" : "nav-links"} onClick={() => setIsMobile(false)}>
                 <li className='nav'><a href="/complaint">Complaint</a></li>
-                <li className='nav'><a href="#about">Pay Fine</a></li>
-                <li className='nav'><a href="#services">Food Menu</a></li>
+                <li className='nav'><a href="/announcement">Announcement</a></li>
+                <li className='nav'><a href="/getfood">Food Menu</a></li>
                 <li>
                     {/* <div id="profile" onClick={fetchUserData}>
                         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile" className="profile-icon" />

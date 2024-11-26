@@ -13,16 +13,28 @@ function Complaint() {
 
     const { createComplain } = usehostalstore();
 
+    // const Submit = async (e) => {
+    //     e.preventDefault(); // Prevent form from submitting in the default way
+    //     console.log("Submitting complaint:", Complaint);
+    //     const { success, message } = await createComplain(Complaint);
+    //     if (success) {
+    //         setNewComplain({ name: "", email: "", roomno: "", comp: "" });
+    //     } else {
+    //         console.error("Error submitting complaint:", message);
+    //     }
+    // };
     const Submit = async (e) => {
-        e.preventDefault(); // Prevent form from submitting in the default way
-        console.log("Submitting complaint:", Complaint);
+        e.preventDefault(); // Prevent default form submission
+    
         const { success, message } = await createComplain(Complaint);
         if (success) {
+            alert("Complaint submitted successfully and email sent!");
             setNewComplain({ name: "", email: "", roomno: "", comp: "" });
         } else {
-            console.error("Error submitting complaint:", message);
+            alert(`Error: ${message}`);
         }
     };
+    
 
     return (
         <div>

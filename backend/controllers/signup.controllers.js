@@ -1,5 +1,6 @@
 import Signup from "../models/signup.model.js";
 
+
 // Controller to create a new account
 export const create_account = async (req, res) => {
     const data = req.body;
@@ -50,5 +51,4 @@ export const signin = async (req, res) => {
 };
 
 
-// Controller to fetch user details
 
