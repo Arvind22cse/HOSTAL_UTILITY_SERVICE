@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import { usehostalstore } from '../store/hostal.js';
-import './FoodView.css';
+import './Foodview.css';
 
 function FoodView() {
     const { food, fetchfood } = usehostalstore();
@@ -38,7 +38,7 @@ function FoodView() {
                                     <td>{foods.foodname}</td>
                                     <td>{new Date(foods.time).toLocaleString()}</td>
                                     <td>
-                                        <img src={foods.img} alt={foods.foodname} className="food-image" style={{width:"50px"}} />
+                                        <img src={foods.img} alt={foods.foodname} className="food-image" style={{width:"90px"}} />
                                     </td>
                                     {/* <td>
                                         <button

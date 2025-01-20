@@ -120,7 +120,7 @@ export const handleComplaint = async (req, res) => {
     // Send email notification
     const mailOptions = {
       from: "arvindm.22cse@kongu.edu",
-      to: "admin@hostelservice.com", // Replace with the actual recipient(s)
+      to: "arvindmurugesan001@gmail.com", // Replace with the actual recipient(s)
       subject: "New Complaint Submitted",
       text: `Complaint Details:\nName: ${name}\nEmail: ${email}\nRoom No: ${roomno}\nComplaint: ${comp}`,
     };
