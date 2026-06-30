@@ -1,78 +1,59 @@
-/* General Styles */
-.student-page {
-    font-family: Arial, sans-serif;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.section-heading {
+  font-size: 1.5rem;
+  color: var(--dark);
+  margin-bottom: var(--spacing-xl);
+  text-align: center;
+}
+
+.home-carousel-section {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.home-carousel {
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.home-carousel-track {
+  display: flex;
+  animation: carouselScroll 20s linear infinite;
+}
+
+.home-carousel-track:hover {
+  animation-play-state: paused;
+}
+
+.home-carousel-slide {
+  flex: 0 0 100%;
+  height: 320px;
+}
+
+.home-carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes carouselScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.home-contact-section {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .home-carousel-slide {
+    height: 220px;
   }
-  
-  .student-header {
-    background-color: #4caf50;
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
+}
+
+@media (max-width: 480px) {
+  .home-carousel-slide {
+    height: 180px;
   }
-  
-  .student-main {
-    padding: 2rem;
-  }
-  
-  /* Carousel Styles */
-  .carousel-section {
-    margin: 2rem auto;
-    width: 60%; /* Adjust the carousel width */
-    overflow: hidden;
-    border-radius: 10px;
-    position: relative;
-  }
-  
-  .carousel {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .carousel-track {
-    display: flex;
-    animation: scroll 10s linear infinite;
-  }
-  
-  .carousel-image {
-    flex: none;
-    width: 100%; /* Matches the container width */
-  }
-  
-  .carousel-image img {
-    width: 100%;
-    border-radius: 10px;
-  }
-  
-  /* Animation */
-  @keyframes scroll {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-  
-  /* Footer Styles */
-  .student-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 1rem 0;
-  }
-  
-  .student-footer h3 {
-    margin: 0 0 0.5rem 0;
-  }
-  
-  .student-footer p {
-    margin: 0.5rem 0;
-  }
-  .imge{
-    width: 200px;
-    height: 300px;
-  }
+}

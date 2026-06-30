@@ -1,54 +1,86 @@
-/* Container to hold all the complaint cards */
-.container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px; /* Space between the cards */
-    padding: 20px;
-    width: 100%; /* Ensure it takes full width */
-    margin: 0 auto;
+.admin-complaint-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
 }
 
-/* Individual complaint card styling */
-.complaint-card {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: calc(25% - 20px); /* 4 cards per row */
-    box-sizing: border-box;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    font-family: Arial, sans-serif;
-    color: #333;
+.admin-complaint-card {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
 }
 
-/* Hover effect for the complaint cards */
-.complaint-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+.admin-complaint-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
 }
 
-/* Ensuring that text inside the cards is aligned properly */
-.complaint-card p {
-    margin-bottom: 10px;
-    font-size: 1rem;
+.admin-complaint-top h3 {
+  font-size: 1.15rem;
+  margin-top: 0.25rem;
 }
 
-.complaint-card strong {
-    color: #4caf50; /* Green color for labels */
+.complaint-sub {
+  font-size: 0.875rem;
+  color: var(--text-muted);
 }
 
-/* Responsive design: 2 cards per row on smaller screens */
-@media (max-width: 1024px) {
-    .complaint-card {
-        width: calc(50% - 20px); /* 2 cards per row */
-    }
+.complaint-body {
+  margin-bottom: var(--spacing-lg);
 }
 
-/* Responsive design: 1 card per row on very small screens */
-@media (max-width: 768px) {
-    .complaint-card {
-        width: 100%; /* 1 card per row */
-    }
+.category-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--primary);
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 0.5rem;
+}
+
+.complaint-body p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0.5rem 0;
+}
+
+.complaint-body small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.complaint-actions {
+  background: var(--surface-alt);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.complaint-actions select,
+.complaint-actions textarea {
+  width: 100%;
+}
+
+.complaint-id {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.05em;
+}
+
+[data-theme="dark"] .category-tag {
+  background: rgba(56, 189, 248, 0.15);
 }

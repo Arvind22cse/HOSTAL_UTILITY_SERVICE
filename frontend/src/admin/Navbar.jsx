@@ -1,61 +1,51 @@
-import React, { useState } from 'react';
-import { usehostalstore } from '../store/hostal.js';
-import './Navbar.css';
-import src from "../assets/LOG.png"
+import React, { useState } from "react";
+import { usehostalstore } from "../store/hostal.js";
+import { FiLogOut, FiMenu, FiX } from "react-icons/fi";
+import ThemeToggle from "../components/ThemeToggle";
+import "../pages/Navbar.css";
 
 const Navbar = () => {
-    const [isMobile, setIsMobile] = useState(false);
-    const [showPopup, setShowPopup] = useState(false);
-    const [userDetails, setUserDetails] = useState(null);
-    const { currentUser, setAccount } = usehostalstore();
+  const [isMobile, setIsMobile] = useState(false);
+  const { logout, currentUser } = usehostalstore();
 
-    const fetchUserData = async () => {
-        if (!currentUser) return;
+  const links = [
+    { href: "/hostalstud", label: "Hostellers" },
+    { href: "/announ", label: "Announcements" },
+    { href: "/viewcomplaint", label: "Complaints" },
+    { href: "/food", label: "Food Menu" },
+  ];
 
-        const res = await fetch(`/api/user/${currentUser._id}`); // Use currentUser's ID
-        const data = await res.json();
+  const handleLogout = () => {
+    logout();
+    window.location.href = "/";
+  };
 
-        if (data.success) {
-            setUserDetails(data.data);
-            setShowPopup(true); // Show the popup when user data is fetched successfully
-        } else {
-            alert(data.message); // Show any error message
-        }
-    };
+  return (
+    <nav className="app-navbar app-navbar--admin">
+      <div className="app-navbar-inner">
+        <a href="/admin" className="app-navbar-brand">Warden Portal</a>
 
-    const logout = () => {
-        setAccount([]); // Clear the accounts
-        window.location.href = "/"; // Redirect to the home page or login page
-    };
-
-    return (
-        <nav className="navbar">
-            <a href="/admin" id='home'><h3 className="logo">Admin</h3></a>
-            <ul className={isMobile ? "nav-links-mobile" : "nav-links"} onClick={() => setIsMobile(false)}>
-            <li className='nav' ><a href="/hostalstud">Hostellers</a></li>
-                <li className='nav'><a href="/announ">Announcement</a></li>
-                <li className='nav'><a href="/viewcomplaint">View complaints</a></li>
-                <li className='nav'><a href="/food">Food</a></li>
-                <li>
-                    {/* <div id="profile" onClick={fetchUserData}>
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile" className="profile-icon" />
-                    </div> */}
-                </li>
-                <li>
-                    <div id="logout" onClick={logout}>
-                        <img src={src} alt="Logout" id='wid' className="logout-icon" />
-                    </div>
-                </li>
-            </ul>
-            <button className="mobile-menu-icon" onClick={() => setIsMobile(!isMobile)}>
-                <div className={isMobile ? "line line-cross" : "line"}></div>
-                <div className={isMobile ? "line line-cross" : "line"}></div>
-                <div className={isMobile ? "line line-cross" : "line"}></div>
+        <ul className={`app-nav-links ${isMobile ? "app-nav-links--open" : ""}`}>
+          {links.map((link) => (
+            <li key={link.href}>
+              <a href={link.href} onClick={() => setIsMobile(false)}>{link.label}</a>
+            </li>
+          ))}
+          <li className="nav-user"><span>{currentUser?.name}</span></li>
+          <li><ThemeToggle /></li>
+          <li>
+            <button type="button" className="app-nav-logout" onClick={handleLogout} aria-label="Logout">
+              <FiLogOut /><span>Logout</span>
             </button>
+          </li>
+        </ul>
 
-            
-        </nav>
-    );
+        <button type="button" className="app-nav-toggle" onClick={() => setIsMobile(!isMobile)}>
+          {isMobile ? <FiX /> : <FiMenu />}
+        </button>
+      </div>
+    </nav>
+  );
 };
 
 export default Navbar;

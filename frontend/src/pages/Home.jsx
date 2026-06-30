@@ -1,50 +1,59 @@
 import React from "react";
-import "./Home.css";
-import './Navbar.jsx'
+import { motion } from "framer-motion";
+import { FiMessageSquare, FiBell, FiCoffee, FiClipboard, FiPhone, FiMail, FiUser } from "react-icons/fi";
 import Navbar from "./Navbar.jsx";
+import "./Home.css";
+
 const StudentPage = () => {
+  const actions = [
+    { href: "/complaint", icon: FiMessageSquare, title: "Submit Complaint", description: "Report issues with rooms, facilities, or services", color: "#0ea5e9" },
+    { href: "/my-complaints", icon: FiClipboard, title: "Track Status", description: "See complaint progress and warden replies", color: "#f59e0b" },
+    { href: "/announcement", icon: FiBell, title: "Announcements", description: "Stay updated with the latest hostel notices", color: "#a855f7" },
+    { href: "/getfood", icon: FiCoffee, title: "Food Menu", description: "View today's meals and dining schedule", color: "#10b981" },
+  ];
+
   return (
-    <>
-    <Navbar/>
-    <div className="student-page">
-      <header className="student-header">
-        <h1>Welcome to Hostel Utility Services</h1>
+    <div className="page-with-nav">
+      <Navbar />
+
+      <header className="page-header">
+        <div className="page-header-content">
+          <h1>Welcome to HostelHub</h1>
+          <p>Your all-in-one hostel utility service portal</p>
+        </div>
       </header>
-      <main className="student-main">
-        {/* Carousel Section */}
-        <section className="carousel-section">
-          <div className="carousel">
-            <div className="carousel-track">
-              <div className="carousel-image">
-                <img
-                  src="https://i.redd.it/duality-of-indian-college-hostels-v0-4y5h5tq0j7gd1.jpg?width=4000&format=pjpg&auto=webp&s=ee23425601056d36951951d5f899c9d11f4335d7"
-                  alt="Service 1"  id="imge"
-                />
+
+      <main className="page-content">
+        <section className="action-grid">
+          {actions.map((action, index) => (
+            <motion.a
+              key={action.href}
+              href={action.href}
+              className="action-card"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -6 }}
+            >
+              <div className="action-card-icon" style={{ background: `${action.color}18`, color: action.color }}>
+                <action.icon />
               </div>
-              <div className="carousel-image">
-                <img
-                  src="https://5.imimg.com/data5/KD/YS/GLADMIN-9222184/hostal-and-boarding-school.jpg"
-                  alt="Service 2"  id="imge"
-                />
-              </div>
-              <div className="carousel-image">
-                <img
-                  src="https://www.shutterstock.com/image-photo/new-delhi-indiajuly-26-2021-600nw-2016000839.jpg"
-                  alt="Service 3"  id="imge"
-                />
-              </div>
-            </div>
+              <h3>{action.title}</h3>
+              <p>{action.description}</p>
+            </motion.a>
+          ))}
+        </section>
+
+        <section className="home-contact-section">
+          <div className="contact-card">
+            <h3>Warden Contact</h3>
+            <div className="contact-item"><FiUser /><span>Hostel Warden Office</span></div>
+            <div className="contact-item"><FiPhone /><span>+91 9876543210</span></div>
+            <div className="contact-item"><FiMail /><span>warden@hostelhub.edu</span></div>
           </div>
         </section>
       </main>
-      <footer className="student-footer">
-        <h3>Warden Details</h3>
-        <p>Name:Arvind</p>
-        <p>Phone: +91 9876543210</p>
-        <p>Email: arvindmurugesan001@gmail.com</p>
-      </footer>
     </div>
-    </>
   );
 };
 

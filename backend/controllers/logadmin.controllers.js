@@ -1,49 +1,63 @@
+import bcrypt from "bcryptjs";
 import AdminSignup from "../models/logadmin.models.js";
+import { generateToken } from "../utils/token.js";
 
 export const create_account_admin = async (req, res) => {
-    const data = req.body;
-    if (!data.name || !data.email || !data.password) {
-        return res.status(400).json({ success: false, message: "Please provide all fields" });
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ success: false, message: "Please provide all fields" });
+  }
+
+  try {
+    const existing = await AdminSignup.findOne({ email });
+    if (existing) {
+      return res.status(409).json({ success: false, message: "Admin email already registered" });
     }
 
-    const newdata = new AdminSignup(data);
-    try {
-        await newdata.save();
-        res.status(201).json({ success: true, data: newdata });
-    } catch (err) {
-        console.error("Error creating account:", err);
-        res.status(500).json({ success: false, message: "Server Error" });
-    }
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const admin = await AdminSignup.create({ name, email, password: hashedPassword });
+    const token = generateToken(admin, "admin");
+
+    res.status(201).json({
+      success: true,
+      message: "Admin account created",
+      token,
+      data: { id: admin._id, name: admin.name, email: admin.email, role: "admin" },
+    });
+  } catch (err) {
+    console.error("Error creating admin account:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
 };
 
-// Controller to handle user sign-in
 export const signin_admin = async (req, res) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    // Admin credentials check
-    // if (email === 'admin@gmail.com' && password === '123') {
-    //     return res.status(200).json({ success: true, message: "Signed in successfully", isAdmin: true });
-    // }
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: "Please provide email and password" });
+  }
 
-
-    if (!email || !password) {
-        return res.status(400).json({ success: false, message: "Please provide both email and password" });
+  try {
+    const admin = await AdminSignup.findOne({ email });
+    if (!admin) {
+      return res.status(404).json({ success: false, message: "Admin account not found" });
     }
 
-    try {
-        const user = await AdminSignup.findOne({ email });
-
-        if (!user) {
-            return res.status(404).json({ success: false, message: "Account not found. Please sign up." });
-        }
-
-        if (user.password !== password) {
-            return res.status(400).json({ success: false, message: "Incorrect email or password" });
-        }
-
-        return res.status(200).json({ success: true, message: "Signed in successfully", data: user });
-    } catch (error) {
-        console.error("Error in sign-in:", error.message);
-        return res.status(500).json({ success: false, message: "Server error" });
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Incorrect email or password" });
     }
+
+    const token = generateToken(admin, "admin");
+    return res.status(200).json({
+      success: true,
+      message: "Signed in successfully",
+      token,
+      data: { id: admin._id, name: admin.name, email: admin.email, role: "admin" },
+    });
+  } catch (error) {
+    console.error("Error in admin sign-in:", error.message);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
 };

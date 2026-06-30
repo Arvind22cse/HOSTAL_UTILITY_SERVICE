@@ -1,233 +1,217 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const usehostalstore = create((set) => ({
-    accounts: [],
-    comp: [],
-    food:[],
-    stud:[],
-    ann:[],
-    currentUser: null, // To store the currently signed-in user
+const authHeaders = (token) => ({
+  "Content-Type": "application/json",
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+});
 
-    setAccount: (accounts) => set({ accounts }),
-    setComp: (comp) => set({ comp }),
-    setAnn: (ann) => set({ ann }),
+export const usehostalstore = create(
+  persist(
+    (set, get) => ({
+      comp: [],
+      food: [],
+      stud: [],
+      ann: [],
+      currentUser: null,
+      token: null,
 
-    // Sign-up function
-    createAccount: async (newAccount) => {
-        if (!newAccount.name || !newAccount.email || !newAccount.password) {
-            return { success: false, message: "Please fill in all fields." };
-        }
+      setAuth: (user, token) => set({ currentUser: user, token }),
+      logout: () => set({ currentUser: null, token: null, comp: [], food: [], stud: [], ann: [] }),
+
+      createAccount: async (newAccount) => {
         const res = await fetch("/api/signup", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newAccount),
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify(newAccount),
         });
         const data = await res.json();
         if (data.success) {
-            set((state) => ({ accounts: [...state.accounts, data.data] }));
+          set({ currentUser: data.data, token: data.token });
         }
         return { success: data.success, message: data.message };
-    },
+      },
 
-    // Sign-in function
-    signInAccount: async (account) => {
-        if (!account.email || !account.password) {
-            return { success: false, message: "Please provide email and password." };
-        }
+      signInAccount: async (account) => {
         const res = await fetch("/api/signin", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(account),
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify(account),
         });
         const data = await res.json();
-
         if (data.success) {
-            set({ currentUser: data.data });
+          set({ currentUser: data.data, token: data.token });
         }
         return { success: data.success, message: data.message };
-    },
+      },
 
-    createAccountadmin: async (newAccount) => {
-        if (!newAccount.name || !newAccount.email || !newAccount.password) {
-            return { success: false, message: "Please fill in all fields." };
-        }
+      createAccountadmin: async (newAccount) => {
         const res = await fetch("/api/signupadmin", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newAccount),
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify(newAccount),
         });
         const data = await res.json();
         if (data.success) {
-            set((state) => ({ accounts: [...state.accounts, data.data] }));
+          set({ currentUser: data.data, token: data.token });
         }
         return { success: data.success, message: data.message };
-    },
+      },
 
-    signInAccountadmin: async (account) => {
-        if (!account.email || !account.password) {
-            return { success: false, message: "Please provide email and password." };
-        }
+      signInAccountadmin: async (account) => {
         const res = await fetch("/api/signinadmin", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(account),
+          method: "POST",
+          headers: authHeaders(),
+          body: JSON.stringify(account),
         });
         const data = await res.json();
-
         if (data.success) {
-            set({ currentUser: data.data });
+          set({ currentUser: data.data, token: data.token });
         }
         return { success: data.success, message: data.message };
-    },
+      },
 
-    createFood: async (Food) => {
-        if (!Food.foodname || !Food.time || !Food.img ) {
-            return { success: false, message: "Please fill in all fields." };
-        }
-        const res = await fetch("/api/create_food", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(Food),
-        });
-        const data = await res.json();
-        if (data.success) {
-            set((state) => ({ food: [...state.food, data.data] }));
-        }
-        return { success: data.success, message: data.message };
-    },
-    // createComplain: async (Complaint) => {
-    //     if (!Complaint.name || !Complaint.email || !Complaint.roomno || !Complaint.comp) {
-    //         return { success: false, message: "Please fill in all fields." };
-    //     }
-    //     const res = await fetch("/api/complaint", {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify(Complaint),
-    //     });
-    //     const data = await res.json();
-    //     if (data.success) {
-    //         set((state) => ({ comp: [...state.comp, data.data] }));
-    //     }
-    //     return { success: data.success, message: data.message };
-    // },
-  
-    createComplain: async (Complaint) => {
-        if (!Complaint.name || !Complaint.email || !Complaint.roomno || !Complaint.comp) {
-            return { success: false, message: "Please fill in all fields." };
-        }
-    
-        try {
-            const res = await fetch("/api/complaint", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(Complaint),
-            });
-            const data = await res.json();
-    
-            if (data.success) {
-                set((state) => ({ comp: [...state.comp, Complaint] })); // Update state
-            }
-            return { success: data.success, message: data.message };
-        } catch (error) {
-            console.error("Error in createComplain:", error);
-            return { success: false, message: "Failed to submit complaint" };
-        }
-    },
-    
-    fetchComplaints: async () => {
-        const res = await fetch("/api/getcomplaints", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data = await res.json();
-        if (data.success) {
-            set({ comp: data.data }); // Store complaints in comp state
-        }
-    },
-    fetchfood: async () => {
-        const res = await fetch("/api/getfood", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const data = await res.json();
-        if (data.success) {
-            set({ food: data.data }); 
-        }
-    },
-    createreview: async (Complaint) => {
-        if (!Complaint.name || !Complaint.food || !Complaint.roomno || !Complaint.comp) {
-            return { success: false, message: "Please fill in all fields." };
-        }
+      createComplain: async (complaint) => {
+        const { token } = get();
         const res = await fetch("/api/complaint", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(Complaint),
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify(complaint),
+        });
+        const data = await res.json();
+        return { success: data.success, message: data.message || data.message };
+      },
+
+      fetchMyComplaints: async () => {
+        const { token } = get();
+        const res = await fetch("/api/my-complaints", {
+          headers: authHeaders(token),
+        });
+        const data = await res.json();
+        if (data.success) set({ comp: data.data });
+        return data;
+      },
+
+      fetchComplaints: async () => {
+        const { token } = get();
+        const res = await fetch("/api/getcomplaints", {
+          headers: authHeaders(token),
+        });
+        const data = await res.json();
+        if (data.success) set({ comp: data.data });
+        return data;
+      },
+
+      updateComplaint: async (id, updates) => {
+        const { token } = get();
+        const res = await fetch(`/api/complaints/${id}`, {
+          method: "PATCH",
+          headers: authHeaders(token),
+          body: JSON.stringify(updates),
         });
         const data = await res.json();
         if (data.success) {
-            set((state) => ({ comp: [...state.comp, data.data] }));
+          set((state) => ({
+            comp: state.comp.map((c) => (c._id === id ? data.data : c)),
+          }));
+        }
+        return data;
+      },
+
+      createFood: async (foodItem) => {
+        const { token } = get();
+        const res = await fetch("/api/create_food", {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify(foodItem),
+        });
+        const data = await res.json();
+        if (data.success) {
+          set((state) => ({ food: [...state.food, data.data] }));
         }
         return { success: data.success, message: data.message };
-    },
-    fetchstud: async () => {
+      },
+
+      updateFood: async (id, foodItem) => {
+        const { token } = get();
+        const res = await fetch(`/api/food/${id}`, {
+          method: "PUT",
+          headers: authHeaders(token),
+          body: JSON.stringify(foodItem),
+        });
+        const data = await res.json();
+        if (data.success) {
+          set((state) => ({
+            food: state.food.map((f) => (f._id === id ? data.data : f)),
+          }));
+        }
+        return { success: data.success, message: data.message };
+      },
+
+      deleteFood: async (id) => {
+        const { token } = get();
+        const res = await fetch(`/api/food/${id}`, {
+          method: "DELETE",
+          headers: authHeaders(token),
+        });
+        const data = await res.json();
+        if (data.success) {
+          set((state) => ({ food: state.food.filter((f) => f._id !== id) }));
+        }
+        return { success: data.success, message: data.message };
+      },
+
+      fetchfood: async () => {
+        const res = await fetch("/api/getfood");
+        const data = await res.json();
+        if (data.success) set({ food: data.data });
+      },
+
+      fetchstud: async () => {
+        const { token } = get();
         const res = await fetch("/api/hostalstud", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+          headers: authHeaders(token),
         });
         const data = await res.json();
-        if (data.success) {
-            set({ stud: data.data }); 
-        }
-    },
-    createAnnounce: async (announce) => {
-        if (!announce.text) {
-            return { success: false, message: "Please fill in all fields." };
-        }
+        if (data.success) set({ stud: data.data });
+      },
+
+      createAnnounce: async (announce) => {
+        const { token } = get();
         const res = await fetch("/api/announce", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(announce),
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify(announce),
         });
         const data = await res.json();
         if (data.success) {
-            set((state) => ({ ann: [...state.ann, data.data] }));
+          set((state) => ({ ann: [data.data, ...state.ann] }));
         }
         return { success: data.success, message: data.message };
-    },
-    fetchAnnounce: async () => {
-        const res = await fetch("/api/getannounce", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+      },
+
+      fetchAnnounce: async () => {
+        const res = await fetch("/api/getannounce");
+        const data = await res.json();
+        if (data.success) set({ ann: data.data });
+      },
+
+      deleteAnnounce: async (id) => {
+        const { token } = get();
+        const res = await fetch(`/api/announce/${id}`, {
+          method: "DELETE",
+          headers: authHeaders(token),
         });
         const data = await res.json();
         if (data.success) {
-            set({ ann: data.data }); 
+          set((state) => ({ ann: state.ann.filter((a) => a._id !== id) }));
         }
-    },
-}));
+        return data;
+      },
+    }),
+    {
+      name: "hostel-auth",
+      partialize: (state) => ({ currentUser: state.currentUser, token: state.token }),
+    }
+  )
+);
